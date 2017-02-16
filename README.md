@@ -13,7 +13,7 @@ The purpose of an inverted index is to allow user perform fast and full text sea
 # **How can I get started with the project**
 * NA
 
-# **External dependencies for the app**
+# **Technologies for the app**
 * Node.js
 * EcmaScript 6 (JavaScript 2015)
 
