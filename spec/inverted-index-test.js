@@ -1,69 +1,115 @@
-"use strict";
+'use strict';
 
-    //A test suite to read book data
-describe("Inverted Index Suite", function(){
-    let newIndex, books, sampleString;
-        
-    beforeEach(function(){
-        //Create an instance of the Index class
-        newIndex = new InvertedIndex();
-        
-        //Test files to be used in the Index
-        books = [
-            {"title": "Heroku",
-            "text":"You will be asked to enter your Heroku credentials the first time you run a command; after the first time, your email address and an API token will be saved"
-            },
-            {"title": "Coveralls",
-            "text": "See the latest code-coverage statistics on all of your repositories including the total percentages covered and the lines covered."
-            }         
-        ];
+const books = require('./books');
 
-        newIndex.createIndex(books);
+// A test suite to read book data
+describe('Inverted Index Suite', () => {
+  //Create an instance of the Index class
+  const newIndex = new InvertedIndex();
+  const emptyBook = [];
+  const sampleSentence = 'As &you can see here, you have defined *the function';
+  const multipleSearch = 'Coverage lines for you';
+  newIndex.createIndex('books', books);
 
-        sampleString = "As &you can see here, we have defined *the function, useCounter(), as the target of the self-executing function %block.";
+  describe('Class Inverted Index', () => {
+    it('should be a class', () => {
+      expect(newIndex instanceof InvertedIndex).toBe(true);
+      expect(newIndex instanceof Object).toBe(true);
+      expect(typeof (newIndex)).toBe('object');
     });
+  });
 
-    describe("Class Inverted Index Class", function() {
-        it("Inverted Index should be a class", function() {
-            expect(typeof(newIndex)).toBe("object");
+  describe('Tokenize String', () => {
+    it('should be available in class InvertedIndex', () => {
+      expect(InvertedIndex.tokenize).toBeDefined();
+    });
+    it('should return an array containing alphabets only', () => {
+      expect(InvertedIndex.tokenize(sampleSentence)).not.toContain('&');
+    });
+    it('should return an array containing the correct number of words', () => {
+      expect(InvertedIndex.tokenize(sampleSentence).length).toBe(10);
+    });
+  });
+
+  describe('Unique Words', () => {
+    it('should be available in class InvertedIndex', () => {
+      expect(InvertedIndex.uniqueWords).toBeDefined();
+    });
+    it('should return an array of words without duplicates', () => {
+      expect(InvertedIndex.uniqueWords(sampleSentence).length).toBe(9);
+    });
+  });
+
+  describe('Read Book Data', () => {
+    it('should have createIndex available in class InvertedIndex', () => {
+      expect(newIndex.createIndex).toBeDefined();
+    });
+    it('should ensure the JSON file is not empty', () => {
+      expect(newIndex.createIndex('emptyBook', emptyBook))
+        .toBe('JSON file is Empty');
+      expect(newIndex.createIndex('books', books))
+        .not.toBe('JSON file is Empty');
+    });
+  });
+
+  describe('Populate Index', () => {
+    it('should have an Index created', () => {
+      expect(newIndex.index.books).toBeDefined();
+    });
+    it('should accurately map words to their document location', () => {
+      expect(Object.keys(newIndex.index).length).toBe(1);
+      expect(Object.keys(newIndex.index.books).length).toBe(38);
+      expect(newIndex.index.books.heroku).toEqual([0]);
+      expect(newIndex.index.books.your).toEqual([0, 1]);
+    });
+  });
+
+  describe('Get Index', () => {
+    it('should return an accurate index Object of the indexed file', () => {
+      expect(newIndex.getIndex('books')).toBeDefined();
+      expect(Object.keys(newIndex.getIndex('books')).length).toBe(38);
+    });
+  });
+
+  describe('Search Index', () => {
+    it('should have searchIndex method accessible in the class', () => {
+      expect(newIndex.searchIndex).toBeDefined();
+    });
+    it('should return correct index for each word if index to search is given',
+      () => {
+        expect(newIndex.searchIndex('heroku', 'books')).toEqual({
+          'heroku': [0]
         });
-
-    });
-
-    describe("Suite to Tokenize String", function() {
-        it("Method tokenize should create and return a correct array of all words from a supplied string", function() {
-            expect(newIndex.tokenize(sampleString)).toBeDefined();
-            expect(newIndex.tokenize(sampleString).length).toBe(20);
-            expect(newIndex.tokenize(sampleString)).not.toContain("&");
+        expect(newIndex.searchIndex('your', 'books')).toEqual({
+          'your': [0, 1]
+        });
+        expect(newIndex.searchIndex('amity', 'books')).toEqual({
+          'amity': 'We are Sorry but amity is not found in our database'
+        });
+        expect(newIndex.searchIndex(multipleSearch, 'books')).toEqual({
+          'coverage': [1],
+          'for': 'We are Sorry but for is not found in our database',
+          'lines': [1],
+          'you': [0, 1]
         });
     });
-
-    describe("Suite to Create Unique Words", function() {
-        it("Method uniqueWords should create and return a correct array of words", function() {
-            expect(newIndex.uniqueWords(sampleString)).toBeDefined();
-            expect(newIndex.uniqueWords(sampleString).length).toBe(16);
+    it('should return correct index for each word without index to search',
+      () => {
+        expect(newIndex.searchIndex('heroku')).toEqual({
+          'heroku': [0]
         });
-    });
-
-    describe("Suite to Create Index", function() {
-        it("Method createIndex should create an index mapping words to document locations", function() {
-            expect(newIndex.createIndex(books)).toBeDefined();
-            expect(newIndex.index.heroku).toBeDefined();
-            expect(Object.keys(newIndex.index).length).toBe(38);
+        expect(newIndex.searchIndex('your')).toEqual({
+          'your': [0, 1]
         });
-    });
-
-    describe("Suite to Read Data", function() {
-        it("JSON file should not be empty", function() {
-            expect(newIndex.indexWords.length).toBeGreaterThan(0);
+        expect(newIndex.searchIndex('amity')).toEqual({
+          'amity': 'We are Sorry but amity is not found in our database'
         });
-    });
-    describe("Suite to Search Index", function() {
-        it("Method searchIndex should return documents containing the search item", function() {
-            let searches = newIndex.searchIndex("heroku");
-            expect(JSON.stringify(searches)).toBe(JSON.stringify([0]));
-            expect(newIndex.searchIndex("andela")).toBe("We are Sorry but that word is not found in our database");
+        expect(newIndex.searchIndex(multipleSearch)).toEqual({
+          'coverage': [1],
+          'for': 'We are Sorry but for is not found in our database',
+          'lines': [1],
+          'you': [0, 1]
         });
-    });
-        
+      });
+  });
 });
