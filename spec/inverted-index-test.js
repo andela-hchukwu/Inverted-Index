@@ -1,15 +1,17 @@
-'use strict';
-
 const books = require('./books');
+const InvertedIndex = require('../src/inverted-index.js');
+
 
 // A test suite to read book data
 describe('Inverted Index Suite', () => {
-  //Create an instance of the Index class
-  const newIndex = new InvertedIndex();
+// Create an instance of the Index class
   const emptyBook = [];
   const sampleSentence = 'As &you can see here, you have defined *the function';
   const multipleSearch = 'Coverage lines for you';
-  newIndex.createIndex('books', books);
+  const newIndex = new InvertedIndex();
+  beforeEach(() => {
+    newIndex.createIndex('books', books);
+  });
 
   describe('Class Inverted Index', () => {
     it('should be a class', () => {
@@ -25,6 +27,8 @@ describe('Inverted Index Suite', () => {
     });
     it('should return an array containing alphabets only', () => {
       expect(InvertedIndex.tokenize(sampleSentence)).not.toContain('&');
+      expect(InvertedIndex.tokenize(sampleSentence)).toBe(['As', 'you',
+        'can', 'see', 'here', 'you', 'have', 'defined', 'the', 'function']);
     });
     it('should return an array containing the correct number of words', () => {
       expect(InvertedIndex.tokenize(sampleSentence).length).toBe(10);
@@ -40,15 +44,14 @@ describe('Inverted Index Suite', () => {
     });
   });
 
-  describe('Read Book Data', () => {
-    it('should have createIndex available in class InvertedIndex', () => {
-      expect(newIndex.createIndex).toBeDefined();
+  describe('Read book data', () => {
+    it('should read the content and return false if the file is empty', () => {
+      const isValid = newIndex.readFileData(books);
+      expect(isValid).toBe(false);
     });
-    it('should ensure the JSON file is not empty', () => {
-      expect(newIndex.createIndex('emptyBook', emptyBook))
-        .toBe('JSON file is Empty');
-      expect(newIndex.createIndex('books', books))
-        .not.toBe('JSON file is Empty');
+    it('should read content and return true if file matches the format', () => {
+      const isValid = newIndex.readFileData(books);
+      expect(isValid).toBe(true);
     });
   });
 
@@ -65,6 +68,9 @@ describe('Inverted Index Suite', () => {
   });
 
   describe('Get Index', () => {
+    it('should return invalid input for invalid files', () => {
+      expect(createdIndex).toEqual('invalid json file');
+    });
     it('should return an accurate index Object of the indexed file', () => {
       expect(newIndex.getIndex('books')).toBeDefined();
       expect(Object.keys(newIndex.getIndex('books')).length).toBe(38);
@@ -78,37 +84,37 @@ describe('Inverted Index Suite', () => {
     it('should return correct index for each word if index to search is given',
       () => {
         expect(newIndex.searchIndex('heroku', 'books')).toEqual({
-          'heroku': [0]
+          heroku: [0]
         });
         expect(newIndex.searchIndex('your', 'books')).toEqual({
-          'your': [0, 1]
+          your: [0, 1]
         });
         expect(newIndex.searchIndex('amity', 'books')).toEqual({
-          'amity': 'We are Sorry but amity is not found in our database'
+          amity: 'We are Sorry but amity is not found in our database'
         });
         expect(newIndex.searchIndex(multipleSearch, 'books')).toEqual({
-          'coverage': [1],
-          'for': 'We are Sorry but for is not found in our database',
-          'lines': [1],
-          'you': [0, 1]
+          coverage: [1],
+          for: 'We are Sorry but for is not found in our database',
+          lines: [1],
+          you: [0, 1]
         });
-    });
+      });
     it('should return correct index for each word without index to search',
       () => {
         expect(newIndex.searchIndex('heroku')).toEqual({
-          'heroku': [0]
+          heroku: [0]
         });
         expect(newIndex.searchIndex('your')).toEqual({
-          'your': [0, 1]
+          your: [0, 1]
         });
         expect(newIndex.searchIndex('amity')).toEqual({
-          'amity': 'We are Sorry but amity is not found in our database'
+          amity: 'We are Sorry but amity is not found in our database'
         });
         expect(newIndex.searchIndex(multipleSearch)).toEqual({
-          'coverage': [1],
-          'for': 'We are Sorry but for is not found in our database',
-          'lines': [1],
-          'you': [0, 1]
+          coverage: [1],
+          for: 'We are Sorry but for is not found in our database',
+          lines: [1],
+          you: [0, 1]
         });
       });
   });
