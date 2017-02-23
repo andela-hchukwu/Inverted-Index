@@ -1,15 +1,18 @@
+/* global newIndex */
+
 const books = require('./books');
-const InvertedIndex = require('../src/inverted-index.js');
+const InvertedIndex = require('../src/inverted-index');
+const emptyJson = require('./empty');
 
 
-// A test suite to read book data
+// A test suite for the inverted index class
 describe('Inverted Index Suite', () => {
 // Create an instance of the Index class
-  const emptyBook = [];
+  const emptyBook = emptyJson;
   const sampleSentence = 'As &you can see here, you have defined *the function';
   const multipleSearch = 'Coverage lines for you';
-  const newIndex = new InvertedIndex();
   beforeEach(() => {
+    const newIndex = new InvertedIndex();
     newIndex.createIndex('books', books);
   });
 
@@ -27,8 +30,9 @@ describe('Inverted Index Suite', () => {
     });
     it('should return an array containing alphabets only', () => {
       expect(InvertedIndex.tokenize(sampleSentence)).not.toContain('&');
-      expect(InvertedIndex.tokenize(sampleSentence)).toBe(['As', 'you',
-        'can', 'see', 'here', 'you', 'have', 'defined', 'the', 'function']);
+      expect(InvertedIndex.tokenize(sampleSentence)).not.toContain('*');
+      expect(InvertedIndex.tokenize(sampleSentence)).toBe(['As', 'can',
+        'defined', 'function', 'have', 'here', 'see', 'the', 'you', 'you']);
     });
     it('should return an array containing the correct number of words', () => {
       expect(InvertedIndex.tokenize(sampleSentence).length).toBe(10);
@@ -41,23 +45,18 @@ describe('Inverted Index Suite', () => {
     });
     it('should return an array of words without duplicates', () => {
       expect(InvertedIndex.uniqueWords(sampleSentence).length).toBe(9);
-    });
-  });
-
-  describe('Read book data', () => {
-    it('should read the content and return false if the file is empty', () => {
-      const isValid = newIndex.readFileData(books);
-      expect(isValid).toBe(false);
-    });
-    it('should read content and return true if file matches the format', () => {
-      const isValid = newIndex.readFileData(books);
-      expect(isValid).toBe(true);
+      expect(InvertedIndex.uniqueWords(sampleSentence)).toBe(['As', 'can',
+        'defined', 'function', 'have', 'here', 'see', 'the', 'you']);
     });
   });
 
   describe('Populate Index', () => {
     it('should have an Index created', () => {
       expect(newIndex.index.books).toBeDefined();
+    });
+    it('should return false if the file Content is Empty', () => {
+      const emptyIndex = InvertedIndex.createIndex('empty', emptyBook);
+      expect(emptyIndex).toBe(false);
     });
     it('should accurately map words to their document location', () => {
       expect(Object.keys(newIndex.index).length).toBe(1);
@@ -69,7 +68,7 @@ describe('Inverted Index Suite', () => {
 
   describe('Get Index', () => {
     it('should return invalid input for invalid files', () => {
-      expect(createdIndex).toEqual('invalid json file');
+      expect(newIndex.getIndex('invalid file')).toEqual('invalid json file');
     });
     it('should return an accurate index Object of the indexed file', () => {
       expect(newIndex.getIndex('books')).toBeDefined();
