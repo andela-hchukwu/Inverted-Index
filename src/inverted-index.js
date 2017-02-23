@@ -1,4 +1,3 @@
-/* global InvertedIndex */
 /**
  * Inverted index class
  */
