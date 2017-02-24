@@ -2,36 +2,32 @@
  * Inverted index class
  */
 class InvertedIndex {
-
   /**
    * Inverted index constructor
    */
   constructor() {
-    // Object to hold the indexes
+    // Object to hold the index
     this.index = {};
-
-    this.searchResults = {};
   }
 
   /**
-   * @param{String} str - String to be tokonized
-   * @return{Array} cleanContent
+   * @param{String} words - String to tokenize
+   * @return{Array} list of words devoid of special characters or symbols
    */
-  static tokenize(str) {
-    const strip = str.trim().replace(/-/g, ' ')
+  static tokenize(words) {
+    return words.trim().replace(/-/g, ' ')
       .replace(/[.,/#!$%^&@*;:'{}=_`~()]/g, '')
       .toLowerCase()
       .split(' ')
       .sort();
-    return strip;
   }
 
   /**
-   * @param{String} str - The string to be filtered
+   * @param{String} words - The string to be filtered
    * @return{Array} tokens - Without duplicated words
    */
-  static uniqueWords(str) {
-    const tokens = this.tokenize(str);
+  static uniqueWords(words) {
+    const tokens = InvertedIndex.tokenize(words);
     return tokens.filter((item, index) => tokens.indexOf(item) === index);
   }
 
@@ -45,24 +41,64 @@ class InvertedIndex {
     const fileIndex = {};
     const fileLength = fileToIndex.length;
     if (fileLength === 0) {
-      return 'JSON file is empty';
+      return 'JSON file is Empty';
     }
     fileToIndex.forEach((document) => {
       if (document.text) {
         wordsToIndex
-        .push(`${document.text.toLowerCase()}`);
+          .push(`${document.title.toLowerCase()} ${document.text
+            .toLowerCase()}`);
       }
     });
     const uniqueContent = InvertedIndex.uniqueWords(wordsToIndex.join(' '));
     uniqueContent.forEach((word) => {
       fileIndex[word] = [];
       wordsToIndex.forEach((document, indexPosition) => {
-        if (document.indexPosition > -1) {
+        if (document.indexOf(word) > -1) {
           fileIndex[word].push(indexPosition);
         }
       });
     });
     this.index[fileName] = fileIndex;
+  }
+
+  /**
+   * @param{String} fileName - The name of the file whose index is required
+   * @return{Object} index - The correct mapping of words to locations
+   * for specified file
+   */
+  getIndex(fileName) {
+    return this.index[fileName];
+  }
+
+  /**
+   * @param{String} searchQuery - Words to search for
+   * @param{String} indexToSearch - Index to query
+   * @return{Object} searchResults - Maps searched words to document locations
+   */
+  searchIndex(searchQuery, indexToSearch) {
+    const searchResult = {};
+    const searchTerms = InvertedIndex.uniqueWords(searchQuery);
+    searchTerms.forEach((word) => {
+      if (indexToSearch) {
+        if (this.index[indexToSearch][word]) {
+          searchResult[word] = this.index[indexToSearch][word];
+        } else {
+          searchResult[word] =
+            `We are Sorry but ${word} is not found in our database`;
+        }
+      } else {
+        Object.keys(this.index).forEach((key) => {
+          if (this.index[key][word]) {
+            searchResult[word] = this.index[key][word];
+          } else {
+            searchResult[word] =
+              `We are Sorry but ${word} is not found in our database`;
+          }
+        });
+      }
+    });
+    return searchResult;
   }
 
 }
