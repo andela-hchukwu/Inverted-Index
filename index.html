@@ -26,7 +26,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-4">
-          <form>
+          <form ng-submit="createIndex">
             <div class="upload">
               <p>Upload a valid json file</p>
               <div class="file-upload">
@@ -47,7 +47,7 @@
           </form>
         </div>
         <div class="col-md-8">
-          <div class="index-table animated fadeInUpBig" ng-include="'views/how-to-use.html'"></div>
+          <div ng-if="!showTable" class="index-table animated fadeInUpBig" ng-include="'views/how-to-use.html'"></div>
         </div>
       </div>
     </div>
@@ -62,8 +62,9 @@
     </div>
   </footer>
   <script src="https://opensource.keycdn.com/angularjs/1.6.2/angular.min.js"></script>
-  <script src="src/inverted-index.js"></script>
+  <script src="inverted-index.js"></script>
   <!--inject:js-->
+  <script src="app.js"></script>
   <script src="directives/fileUpload.js"></script>
   <!--endinject-->
 </body>
