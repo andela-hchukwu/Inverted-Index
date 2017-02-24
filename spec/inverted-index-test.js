@@ -1,3 +1,4 @@
+/* global InvertedIndex */
 /** Instance of index Object */
 
 /**
@@ -64,30 +65,30 @@ describe('Inverted Index Suite', () => {
     });
 
     describe('Populate Index', () => {
-    it('should have an Index created', () => {
-      expect(newIndex.index.books).toBeDefined();
+      it('should have an Index created', () => {
+        expect(newIndex.index.books).toBeDefined();
+      });
+      it('should return false if the file Content is Empty', () => {
+        const emptyIndex = newIndex.createIndex('empty', emptyBook);
+        expect(emptyIndex).toBe(undefined);
+      });
+      it('should accurately map words to their document location', () => {
+        expect(Object.keys(newIndex.index).length).toBe(2);
+        expect(Object.keys(newIndex.index.books).length).toBe(38);
+        expect(newIndex.index.books.heroku).toEqual([0]);
+        expect(newIndex.index.books.your).toEqual([0, 1]);
+      });
     });
-    it('should return false if the file Content is Empty', () => {
-      const emptyIndex = newIndex.createIndex('empty', emptyBook);
-      expect(emptyIndex).toBe(undefined);
-    });
-    it('should accurately map words to their document location', () => {
-      expect(Object.keys(newIndex.index).length).toBe(2);
-      expect(Object.keys(newIndex.index.books).length).toBe(38);
-      expect(newIndex.index.books.heroku).toEqual([0]);
-      expect(newIndex.index.books.your).toEqual([0, 1]);
-    });
-  });
 
     describe('Get Index', () => {
-    it('should return invalid input for invalid files', () => {
-      expect(newIndex.getIndex('invalid file')).toEqual(undefined);
+      it('should return invalid input for invalid files', () => {
+        expect(newIndex.getIndex('invalid file')).toEqual(undefined);
+      });
+      it('should return an accurate index Object of the indexed file', () => {
+        expect(newIndex.getIndex('books')).toBeDefined();
+        expect(Object.keys(newIndex.getIndex('books')).length).toBe(38);
+      });
     });
-    it('should return an accurate index Object of the indexed file', () => {
-      expect(newIndex.getIndex('books')).toBeDefined();
-      expect(Object.keys(newIndex.getIndex('books')).length).toBe(38);
-    });
-  });
 
   // describe('Search Index', () => {
   //   it('should have searchIndex method accessible in the class', () => {

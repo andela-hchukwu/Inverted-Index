@@ -21,7 +21,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'src/inverted-index.js',
       'spec/inverted-index-test.js'
     ],
 
