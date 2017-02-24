@@ -1,16 +1,58 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Inverted Index</title>
-    </head>
-    <body>
-        <div class="main-controller">
-            <div class="navbar navbar-default">
-                <div class="container">
-                    <h1 class="header">Inverted Index</h1>
-                </div>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Inverted Index</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+  <link rel="stylesheet" href="src/css/font-awesome-4.7.0/css/font-awesome.css" />
+  <!--inject:css-->
+  <link rel="stylesheet" href="src/css/bootstra.css">
+  <link rel="stylesheet" href="src/css/main.css">
+  <!--endinject-->
+</head>
+
+<body>
+  <div class="main-container">
+    <div class="navbar navbar-default">
+      <div class="container">
+        <h1 class="brand">Inverted Index</h1>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <form>
+            <div>
+              <div class="input-group">
+                <select id="uploaded-files" class="form-control" placeholder="select books">
+                <option>Select a file to index</option>
+              </select>
+                <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">Create an Index</button>
+              </span>
+              </div>
             </div>
+          </form>
         </div>
-    </body>
+        <div class="col-md-8">
+          <div class="index-table animated fadeInUpBig"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div col-md-12>
+          <p>&copy; Copyright 2017 Inverted Index Inc</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+
 </html>
