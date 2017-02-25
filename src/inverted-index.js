@@ -2,103 +2,94 @@
  * Inverted index class
  */
 class InvertedIndex {
+
   /**
-   * Inverted index constructor
+   * class constructor
+   * @constructor
    */
   constructor() {
-    // Object to hold the index
-    this.index = {};
+    this.indexedFiles = [];
   }
 
-  /**
-   * @param{String} words - String to tokenize
-   * @return{Array} list of words devoid of special characters or symbols
+
+  /**  strips all non-character values.
+   *
+   *  @param {String} text to be stripped
+   *  @return {Array} array of stripped values
    */
-  static tokenize(words) {
-    return words.trim().replace(/-/g, ' ')
-      .replace(/[.,/#!$%^&@*;:'{}=_`~()]/g, '')
-      .toLowerCase()
-      .split(' ')
-      .sort();
+  strip(text) {
+    return text.toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .split(/\s+/g);
   }
 
-  /**
-   * @param{String} words - The string to be filtered
-   * @return{Array} tokens - Without duplicated words
-   */
-  static uniqueWords(words) {
-    const tokens = InvertedIndex.tokenize(words);
-    return tokens.filter((item, index) => tokens.indexOf(item) === index);
-  }
 
-  /**
-   * @param{String} fileName - The name of the file to be indexed
-   * @param{Array} fileToIndex - Array of contents of the JSON file to index
-   * @return{Object} index - That maps words to locations(documents)
+  /** creates an inverted index
+   *
+   * @param {String} fileName name of file to be indexed
+   * @param {String} fileData data of file to be indexed
+   * @return {Object} data to be indexed
    */
-  createIndex(fileName, fileToIndex) {
-    const wordsToIndex = [];
-    const fileIndex = {};
-    const fileLength = fileToIndex.length;
-    if (fileLength === 0) {
-      return 'JSON file is Empty';
+  createIndex(fileName, fileData) {
+    const terms = {};
+    let count = 0;
+    if (typeof (fileData) !== 'object') {
+      return 'invalid json file';
     }
-    fileToIndex.forEach((document) => {
-      if (document.text) {
-        wordsToIndex
-          .push(`${document.title.toLowerCase()} ${document.text
-            .toLowerCase()}`);
-      }
-    });
-    const uniqueContent = InvertedIndex.uniqueWords(wordsToIndex.join(' '));
-    uniqueContent.forEach((word) => {
-      fileIndex[word] = [];
-      wordsToIndex.forEach((document, indexPosition) => {
-        if (document.indexOf(word) > -1) {
-          fileIndex[word].push(indexPosition);
+    try {
+      for (const book of fileData) {
+        count++;
+        for (const key in book) {
+          this.strip(book[key]).forEach((word) => {
+            if (!terms.hasOwnProperty(word)) {
+              terms[word] = [];
+            }
+            if (terms[word].indexOf(count) > -1) {
+              return;
+            }
+            terms[word].push(count);
+          });
         }
-      });
-    });
-    this.index[fileName] = fileIndex;
+      }
+    } catch (e) {
+      return { error: 'invalid json format'};
+    }
+
+    this.indexedFiles[fileName] = terms;
+    return terms;
   }
 
-  /**
-   * @param{String} fileName - The name of the file whose index is required
-   * @return{Object} index - The correct mapping of words to locations
-   * for specified file
+
+  /**  get an indexed file
+   *
+   * @param {String} fileName  name
+   * @return {Object} file - the index file
    */
   getIndex(fileName) {
-    return this.index[fileName];
+    const file = this.indexedFiles[fileName];
+    return file || 'file not found';
   }
 
-  /**
-   * @param{String} searchQuery - Words to search for
-   * @param{String} indexToSearch - Index to query
-   * @return{Object} searchResults - Maps searched words to document locations
+
+  /** search inverted index
+   *
+   * @function
+   * @param {String} query - value for query
+   * @param {String} fileName - name of fileto be queried
+   * @return {Object} return search query
    */
-  searchIndex(searchQuery, indexToSearch) {
-    const searchResult = {};
-    const searchTerms = InvertedIndex.uniqueWords(searchQuery);
-    searchTerms.forEach((word) => {
-      if (indexToSearch) {
-        if (this.index[indexToSearch][word]) {
-          searchResult[word] = this.index[indexToSearch][word];
-        } else {
-          searchResult[word] =
-            `We are Sorry but ${word} is not found in our database`;
-        }
-      } else {
-        Object.keys(this.index).forEach((key) => {
-          if (this.index[key][word]) {
-            searchResult[word] = this.index[key][word];
-          } else {
-            searchResult[word] =
-              `We are Sorry but ${word} is not found in our database`;
-          }
-        });
+  searchIndex(query, fileName) {
+    const fileToSearch = this.getIndex(fileName);
+    const found = {};
+    if (!query || typeof (fileToSearch) === 'string') {
+      return 'no query to search';
+    }
+    this.strip(query).forEach((word) => {
+      if (fileToSearch.hasOwnProperty(word)) {
+        found[word] = fileToSearch[word];
       }
     });
-    return searchResult;
+    return found;
   }
-
 }
+
