@@ -1,70 +1,129 @@
-const invertedApp = angular
-  .module('InvertedIndex', [])
-  .controller('invertedController', ($scope) => {
-    const newIndex = new InvertedIndex();   
-  /**
-   * @param{String} msg
-   * @return{null} no return statement
-   */
-    function setMessage(msg) {
-      $scope.$apply(() => {
-        $scope.uploadError = msg;
+angular.module('invertedIndex', [])
+  .controller('mainController', ['$scope', '$timeout', ($scope, $timeout) => {
+    /**
+     *  {Object} instanciates the invertedIndex class
+     */
+    const indexer = new InvertedIndex();
+
+    $scope.uploadedFiles = {};
+
+    $scope.index = [];
+
+    $scope.showTable = false;
+
+    $scope.fileCount = [];
+
+    $scope.allIndexedFiles = [];
+
+    /** converts data to be feed to the view
+     *
+     * @param  {String} fileName - file name
+     * @param  {Object} data  - data to transform
+     * @param  {count} count - count of object in the file
+     */
+    $scope.transformData = (fileName, data, count) => ({
+        fileName: fileName,
+        data: data,
+        count: count
       });
-    }
 
-    $scope.uploadFile = () => {
-      $scope.validSearch = false;
-      $scope.indexExists = false;
-      $scope.theFile = document.getElementById('select-files').files[0];
-      const reader = new FileReader();
-      reader.readAsText($scope.theFile);
-
-      reader.onload = (e) => {
-        if (!$scope.theFile.name.toLowerCase().match(/\.json$/)) {
-          $scope.uploadSuccess = false;
-          setMessage('This is not a JSON file.');
-          return;
-        }
-        try {
-          const filed = JSON.parse(e.target.result);
-          if (filed.length === 0 || !filed[0].title || !filed[0].text) {
-            $scope.uploadSuccess = false;
-            setMessage('This is an Empty JSON File');
-            $scope.$apply();
-          } else {
-            $scope.uploadSuccess = true;
-          }
-          $scope.filed = filed;
-          $scope.$apply();
-        } catch (e) {
-          setMessage(e);
-        }
-      };
-    };
-
+    /**
+     * creates an inverted Index
+     */
     $scope.createIndex = () => {
-      if ($scope.uploadSuccess) {
-        newIndex.createIndex($scope.theFile.name, $scope.filed);
-        $scope.range = [];
-        const filedLength = $scope.filed.length;
-        for (let docIndex = 0; docIndex < filedLength; docIndex++) {
-          $scope.range.push(docIndex);
+      const selected = document.getElementById('uploaded-files').value;
+      const uploadedFiles = $scope.uploadedFiles;
+      if ($scope.isValidFile(selected) &&
+        uploadedFiles.hasOwnProperty(selected)) {
+        const data = indexer.createIndex(selected, uploadedFiles[selected]);
+        if (data.hasOwnProperty('error') || $scope.length(data) < 1) {
+          $scope.alerts('invalid json file or format', 'danger');
+          return false;
         }
-        $scope.indexExists = true;
-      } else {
-        $scope.indexExists = false;
-        setMessage('Upload a valid JSON file first.');
-      }
-      $scope.indexObject = newIndex.getIndex($scope.theFile.name);
-    };
-    $scope.searchFile = () => {
-      if ($scope.indexExists) {
-        $scope.searchItem = $scope.searchTerm;
-        $scope.searchResults = newIndex
-          .searchIndex($scope.searchItem, $scope.theFile.name);
-        $scope.validSearch = true;
-      } else {
-        $scope.validSearch = false;
+        const fileCount = uploadedFiles[selected].length;
+        $scope.index[0] = $scope.transformData(selected, data, fileCount);
+        $scope.fileCount[selected] = fileCount;
+        if ($scope.allIndexedFiles.indexOf(selected) === -1) {
+          $scope.allIndexedFiles.push(selected);
+        }
+        $scope.showTable = true;
       }
     };
-  });
+
+    /** searches  indexed files for
+     *
+     * @param {String} query alue to be searched
+     * @return {void}  set the index value
+     */
+    $scope.searchIndex = (query) => {
+      let result;
+      const selected = document.getElementById('indexed-files').value;
+      let fileCount = null;
+      $scope.index = [];
+      // checks if a query was passed in
+      if (!query || selected === '--select a file--') {
+        $scope.alerts('please enter a query and select file  to search',
+          'danger ', true, 5000);
+        return false;
+      }
+      // displays serach result for all indexed files
+      if (selected === 'all') {
+        let count = 0;
+        for (const file in indexer.indexedFiles) {
+          const searchData = indexer.searchIndex(query, file);
+          fileCount = $scope.fileCount[file];
+          if ($scope.length(searchData) < 1) {
+            continue;
+          }
+          $scope.index[count] = $scope
+            .transformData(file, searchData, fileCount);
+          count++;
+        }
+        if ($scope.index.length < 1) {
+          $scope.alerts('word does not exist in any file', 'danger');
+        }
+      } else {
+        fileCount = $scope.fileCount[selected];
+        result = indexer.searchIndex(query, selected);
+        if ($scope.length(result) > 0) {
+          $scope.index[0] = $scope.transformData(selected, result, fileCount);
+        } else {
+          $scope.alerts('no index found with that query', 'danger');
+        }
+      }
+    };
+
+
+    /** checks for a valid json file
+     *
+     * @param {String}  file to check
+     * @return {Boolen}  true or flase
+     */
+    $scope.isValidFile = file => file.match(/\.json$/);
+
+    /** gets the length an object
+     *
+     * @param {Object}  object to check
+     * @return {Int}  true or flase
+     */
+    $scope.length = object => Object.keys(object).length;
+
+
+    /**  configures the alert property
+     *
+     * @param {Strimg} message to alert
+     * @param {tye} type of message
+     * @param {Boolean} show check for falsy
+     * @param {Integer} timeout of display
+     */
+    $scope.alerts = (message, type, show, timeout) => {
+      $scope.alert = {
+        message: message,
+        type: type,
+        show: true
+      };
+      $timeout( () => {
+        $scope.alert.show = false;
+      }, timeout || 5000);
+    };
+  }]);
