@@ -52,7 +52,7 @@ class InvertedIndex {
         }
       }
     } catch (e) {
-      return { error: 'invalid json format'};
+      return { error: 'invalid json format' };
     }
 
     this.indexedFiles[fileName] = terms;
