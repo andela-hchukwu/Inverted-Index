@@ -4,7 +4,7 @@
   "description": "A simple inverted index application",
   "main": "app.js",
   "scripts": {
-    "test": "karma start karma.conf.js --single-run"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
