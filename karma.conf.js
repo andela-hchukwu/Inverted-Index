@@ -9,7 +9,6 @@ module.exports = function(config) {
     basePath: '',
 
     plugins: [
-      'karma-firefox-launcher',
       'karma-jasmine'
     ],
 
