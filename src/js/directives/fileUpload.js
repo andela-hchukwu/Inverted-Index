@@ -27,7 +27,6 @@ angular.module('invertedIndex')
                 scope.alerts('invalid json. pls refer to index guide ',
                   'danger', true, 5000);
               });
-              return;
             }
           };
           reader.readAsText(file);
@@ -36,6 +35,6 @@ angular.module('invertedIndex')
     }
     return {
       templateUrl: '../views/upload-file.html',
-      link: link
+      link
     };
   });

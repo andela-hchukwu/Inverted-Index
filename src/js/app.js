@@ -20,15 +20,17 @@ angular.module('invertedIndex', [])
      * @param  {String} fileName - file name
      * @param  {Object} data  - data to transform
      * @param  {count} count - count of object in the file
+     * @return {Object} return fileName, data and count
      */
     $scope.transformData = (fileName, data, count) => ({
-        fileName: fileName,
-        data: data,
-        count: count
-      });
+      fileName,
+      data,
+      count
+    });
 
     /**
      * creates an inverted Index
+     * @return {Boolean} return false for invalid file
      */
     $scope.createIndex = () => {
       const selected = document.getElementById('uploaded-files').value;
@@ -113,16 +115,17 @@ angular.module('invertedIndex', [])
      *
      * @param {Strimg} message to alert
      * @param {tye} type of message
-     * @param {Boolean} show check for falsy
+     * @param {Boolean} show message
      * @param {Integer} timeout of display
+     * @return {null} no return statement
      */
     $scope.alerts = (message, type, show, timeout) => {
       $scope.alert = {
-        message: message,
-        type: type,
+        message,
+        type,
         show: true
       };
-      $timeout( () => {
+      $timeout(() => {
         $scope.alert.show = false;
       }, timeout || 5000);
     };
