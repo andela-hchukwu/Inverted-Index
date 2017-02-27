@@ -16,10 +16,11 @@ const invalidjson = [{
   }
 }];
 
+let index;
+let indexedBook;
 
 describe('Inverted index', () => {
-  let index;
-  let indexedBook;
+
   beforeEach(() => {
     index = new InvertedIndex();
     indexedBook = index.createIndex('books.json', books);
