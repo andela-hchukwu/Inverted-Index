@@ -1,5 +1,6 @@
 /**
  * Inverted index class
+ * @class
  */
 class InvertedIndex {
 
@@ -93,3 +94,4 @@ class InvertedIndex {
   }
 }
 
+module.exports = InvertedIndex;
