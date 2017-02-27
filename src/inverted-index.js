@@ -27,7 +27,7 @@ class InvertedIndex {
   /** creates an inverted index
    *
    * @param {String} fileName name of file to be indexed
-   * @param {String} fileData data of file to be indexed
+   * @param {Object} fileData Array of file to be indexed
    * @return {Object} data to be indexed
    */
   createIndex(fileName, fileData) {
@@ -93,3 +93,4 @@ class InvertedIndex {
   }
 }
 
+module.exports = InvertedIndex;
