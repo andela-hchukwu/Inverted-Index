@@ -16,14 +16,13 @@ const invalidjson = [{
   }
 }];
 
-let index;
-let indexedBook;
 
 describe('Inverted index', () => {
-
+  let index;
+  let indexedBook;
   beforeEach(() => {
     index = new InvertedIndex();
-    indexedBook = index.createIndex('books.json', books);
+    indexedBook = index.createIndex('books', books);
   });
   describe('Index Constructor', () => {
     it('should be an instance of  InvertedIndex', () => {
