@@ -4,6 +4,7 @@
   "description": "A simple inverted index application",
   "main": "app.js",
   "scripts": {
+    "start": "node server.js",
     "test": "jasmine spec/inverted-index-test.js"
   },
   "repository": {
