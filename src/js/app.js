@@ -36,14 +36,17 @@ angular.module('invertedIndex', [])
       const selected = document.getElementById('uploaded-files').value;
       const uploadedFiles = $scope.uploadedFiles;
       if ($scope.isValidFile(selected) &&
-        uploadedFiles.hasOwnProperty(selected)) {
-        const data = indexer.createIndex(selected, uploadedFiles[selected]);
-        if (data.hasOwnProperty('error') || $scope.length(data) < 1) {
+        Array.isArray(uploadedFiles[selected])) {
+        indexer.createIndex(selected, uploadedFiles[selected]);
+        $scope.data = indexer.getIndex(selected);
+        if (Array.isArray($scope.data.error)
+        || $scope.length($scope.data) < 1) {
           $scope.alerts('invalid json file or format', 'danger');
           return false;
         }
         const fileCount = uploadedFiles[selected].length;
-        $scope.index[0] = $scope.transformData(selected, data, fileCount);
+        $scope.index[0] = $scope
+        .transformData(selected, $scope.data, fileCount);
         $scope.fileCount[selected] = fileCount;
         if ($scope.allIndexedFiles.indexOf(selected) === -1) {
           $scope.allIndexedFiles.push(selected);
@@ -61,7 +64,7 @@ angular.module('invertedIndex', [])
       let result;
       const selected = document.getElementById('indexed-files').value;
       let fileCount = null;
-      $scope.index = [];
+      $scope.indexs = [];
       // checks if a query was passed in
       if (!query || selected === '--select a file--') {
         $scope.alerts('please enter a query and select file  to search',
@@ -79,7 +82,7 @@ angular.module('invertedIndex', [])
           }
           $scope.index[count] = $scope
             .transformData(file, searchData, fileCount);
-          count++;
+          count += 1;
         }
         if ($scope.index.length < 1) {
           $scope.alerts('word does not exist in any file', 'danger');

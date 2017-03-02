@@ -1,115 +1,141 @@
 const InvertedIndex = require('../src/inverted-index.js');
 
 
-const books = [{
-  title: 'Alice in Wonderland',
-  text: 'Alice falls into a rabbit hole and enters na world full of imagination.'
-}, {
-  title: 'The Lord of the Rings: The Fellowship of the Ring.',
-  text: 'An unusual alliance of man, elf, dwarf, wizard and hobbit seek to destroy a powerful ring.'
-}];
-
-const invalidjson = [{
-  titles: {
-    title: 'Alice in Wonderland',
-    text: 'Alice falls into a rabbit hole and enters a world full of imagination.'
+const books = [
+  { title: 'Heroku',
+    text: 'You will be asked to enter your Heroku credentials the first time you run a command; after the first time, your email address and an API token will be saved'
+  },
+  { title: 'Coveralls',
+    text: 'See the latest code-coverage statistics on all of your repositories including the total percentages covered and the lines covered.'
   }
-}];
+];
 
-
-describe('Inverted index', () => {
-  let index;
-  let indexedBook;
+describe('Inverted index Suite', () => {
+   // Create an instance of the Index class
+  const newIndex = new InvertedIndex();
+  const emptyBook = [];
+  const sampleSentence = 'As &you can see here, y*ou, #@have ==defined *the function';
+  const multipleSearch = 'Coverage lines for you';
   beforeEach(() => {
-    index = new InvertedIndex();
-    indexedBook = index.createIndex('books', books);
+    newIndex.createIndex('books', books);
   });
-  describe('Index Constructor', () => {
-    it('should be an instance of  InvertedIndex', () => {
-      expect(index instanceof InvertedIndex).toBeTruthy();
-      expect(typeof (index)).toEqual('object');
-    });
 
-    it('should have a defualt instatiated  values', () => {
-      expect(index.indexedFiles).not.toBe(null);
-      expect(Array.isArray(index.indexedFiles)).toBeTruthy();
+  describe('Class Inverted Index', () => {
+    it('should be a class', () => {
+      expect(newIndex instanceof InvertedIndex).toBe(true);
+      expect(newIndex instanceof Object).toBe(true);
+      expect(typeof (newIndex)).toBe('object');
     });
   });
 
-  describe('Create index', () => {
-    it('should return invalid input for invalid files', () => {
-      const createdIndex = index.createIndex('books');
-      expect(createdIndex).toEqual('invalid json file');
+  describe('Tokenize String', () => {
+    it('should be available in class InvertedIndex', () => {
+      expect(InvertedIndex.tokenize).toBeDefined();
     });
-
-    it('should return an object', () => {
-      expect(typeof (indexedBook)).toEqual('object');
+    it('should return an array containing alphabets only', () => {
+      expect(InvertedIndex.tokenize(sampleSentence)).not.toContain('&');
     });
-
-    it('should create a valid index', () => {
-      expect(indexedBook.a).not.toBe(null);
-      expect(indexedBook.alice).toEqual(jasmine.arrayContaining([1]));
-      expect(indexedBook.and).toEqual(jasmine.arrayContaining([1, 2]));
+    it('should return an array containing alphabets only', () => {
+      expect(InvertedIndex.tokenize(sampleSentence)).not.toContain(/&#\*@=/);
     });
-
-    it('should return error for invalid json format', () => {
-      const newBook = index.createIndex('books.json', invalidjson);
-      expect(typeof newBook).toEqual('object');
-      expect(newBook.error).toEqual('invalid json format');
+    it('should return an array containing alphabets only', () => {
+      expect(InvertedIndex.tokenize(sampleSentence)).toEqual(['as',
+        'can', 'defined', 'function', 'have', 'here', 'see', 'the',
+        'you', 'you']);
+    });
+    it('should return an array containing the correct number of words', () => {
+      expect(InvertedIndex.tokenize(sampleSentence).length).toBe(10);
     });
   });
 
-  describe('String stripper', () => {
-    it('should return an array', () => {
-      const strippedString = index.strip('Alice in Wonderland');
-      expect(Array.isArray(strippedString)).toBeTruthy();
-      expect(strippedString).toEqual(jasmine
-      .arrayContaining(['alice', 'in', 'wonderland']));
+  describe('Unique Words', () => {
+    it('should be available in class InvertedIndex', () => {
+      expect(InvertedIndex.uniqueWords).toBeDefined();
     });
-
-    it('should remove all non alphanumeric characters', () => {
-      const strippedString = index.strip('he Lord of the Ring #==');
-      expect(strippedString).toEqual(jasmine
-      .arrayContaining(['he', 'lord', 'of']));
-      expect(strippedString).not.toEqual(jasmine.arrayContaining(['#==']));
+    it('should return an array of words without duplicates', () => {
+      expect(InvertedIndex.uniqueWords(sampleSentence).length).toBe(9);
+    });
+    it('should return an array of words without duplicates', () => {
+      expect(InvertedIndex.uniqueWords(sampleSentence)).toEqual(['as',
+        'can', 'defined', 'function', 'have', 'here', 'see', 'the',
+        'you']);
     });
   });
 
-  describe('Get index', () => {
-    it('should return not found if get index failed', () => {
-      const indexedFile = index.getIndex('NOT A VALID PARAM');
-      expect(indexedFile).toEqual('file not found');
+  describe('Read Book Data', () => {
+    it('should have createIndex available in class InvertedIndex', () => {
+      expect(newIndex.createIndex).toBeDefined();
     });
-
-    it('should return an object when value is found', () => {
-      const indexedFile = index.getIndex('books');
-      expect(typeof (indexedFile) === 'object').toBeTruthy();
-    });
-
-    it('should contain valid indexed words and position', () => {
-      const indexedFile = index.getIndex('books');
-      expect(indexedFile.hasOwnProperty('alice')).toBeTruthy();
-      expect(Array.isArray(indexedFile.alice)).toBeTruthy();
-      expect(indexedFile.of).toEqual(jasmine.arrayContaining([1, 2]));
+    it('should ensure the JSON file is not empty', () => {
+      expect(newIndex.createIndex('emptyBook', emptyBook))
+        .toBe('JSON file is Empty');
+      expect(newIndex.createIndex('books', books))
+        .not.toBe('JSON file is Empty');
     });
   });
 
-  describe('Search index', () => {
-    it('should return no query when no value is passed in', () => {
-      const searchResult = index.searchIndex();
-      expect(searchResult).toEqual('no query to search');
+  describe('Populate Index', () => {
+    it('should have an Index created', () => {
+      expect(newIndex.index.books).toBeDefined();
     });
+    it('should accurately map words to their document location', () => {
+      expect(Object.keys(newIndex.index).length).toBe(1);
+      expect(Object.keys(newIndex.index.books).length).toBe(38);
+      expect(newIndex.index.books.heroku).toEqual([0]);
+      expect(newIndex.index.books.your).toEqual([0, 1]);
+    });
+  });
 
-    it('should return an empty {object} if no query is found', () => {
-      const searchResult = index.searchIndex('jesus', 'books');
-      expect(typeof (searchResult)).toEqual('object');
-      expect(Object.keys(searchResult).length).toBe(0);
+  describe('Get Index', () => {
+    it('should return an accurate index Object of the indexed file', () => {
+      expect(newIndex.getIndex('books')).toBeDefined();
+      expect(Object.keys(newIndex.getIndex('books')).length).toBe(38);
     });
+    it('should return undefined if no index has been created', () => {
+      const getIndex = newIndex.getIndex('book3');
+      expect(getIndex).toBeUndefined();
+    });
+  });
 
-    it('should return an {object} with valid properties', () => {
-      const searchResult = index.searchIndex('alice in wonderland', 'books');
-      expect(typeof (searchResult) === 'object').toBe(true);
-      expect(searchResult.alice).toEqual(jasmine.arrayContaining([1]));
+  describe('Search Index', () => {
+    it('should have searchIndex method accessible in the class', () => {
+      expect(newIndex.searchIndex).toBeDefined();
     });
+    it('should return correct index for each word if index to search is given',
+      () => {
+        expect(newIndex.searchIndex('heroku', 'books')).toEqual({
+          heroku: [0]
+        });
+        expect(newIndex.searchIndex('your', 'books')).toEqual({
+          your: [0, 1]
+        });
+        expect(newIndex.searchIndex('amity', 'books')).toEqual({
+          amity: 'We are Sorry but amity is not found in our database'
+        });
+        expect(newIndex.searchIndex(multipleSearch, 'books')).toEqual({
+          coverage: [1],
+          for: 'We are Sorry but for is not found in our database',
+          lines: [1],
+          you: [0, 1]
+        });
+      });
+    it('should return correct index for each word without index to search',
+      () => {
+        expect(newIndex.searchIndex('heroku')).toEqual({
+          heroku: [0]
+        });
+        expect(newIndex.searchIndex('your')).toEqual({
+          your: [0, 1]
+        });
+        expect(newIndex.searchIndex('amity')).toEqual({
+          amity: 'We are Sorry but amity is not found in our database'
+        });
+        expect(newIndex.searchIndex(multipleSearch)).toEqual({
+          coverage: [1],
+          for: 'We are Sorry but for is not found in our database',
+          lines: [1],
+          you: [0, 1]
+        });
+      });
   });
 });

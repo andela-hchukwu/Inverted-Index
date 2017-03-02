@@ -21,7 +21,7 @@
     <thead class="thead-inverse">
       <tr>
         <th>words</th>
-        <th ng-repeat="number in [] | range:data.count"> doc_{{ number }}</th>
+        <th ng-repeat="number in [] | range:data.count"> doc_{{ number + 1 }}</th>
       </tr>
     </thead>
     <tr ng-repeat="(key, values) in data.data track by $index">
