@@ -31,6 +31,24 @@ class InvertedIndex {
     return tokens.filter((item, index) => tokens.indexOf(item) === index);
   }
 
+   /**
+   * checks the content of the uploaded json file and returns
+   * true if the file follows the allowed format
+   * @param {Array} file the content of the file
+   * @returns {boolean} returns a boolean
+   */
+  static readFileData(file) {
+    if (!Array.isArray(file) || file.length < 1) {
+      return false;
+    }
+    for (let i = 0; i < file.length; i += 1) {
+      if (!file[i].title || !file[i].text) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   /**
    * @param{String} fileName - The name of the file to be indexed
    * @param{Array} fileToIndex - Array of contents of the JSON file to index
@@ -39,14 +57,14 @@ class InvertedIndex {
   createIndex(fileName, fileToIndex) {
     const wordsToIndex = [];
     const fileIndex = {};
-    const fileLength = fileToIndex.length;
-    if (fileLength === 0) {
-      return 'JSON file is Empty';
+    const readFile = InvertedIndex.readFileData(fileToIndex);
+    if (!readFile) {
+      return false;
     }
     fileToIndex.forEach((document) => {
-      if (document.text) {
+      if (document.text && document.title) {
         wordsToIndex
-          .push(`${document.title.toLowerCase()} ${document.text
+          .push(`${document.text
             .toLowerCase()}`);
       }
     });
@@ -60,7 +78,6 @@ class InvertedIndex {
       });
     });
     this.index[fileName] = fileIndex;
-    // return this.index;
   }
 
   /**
