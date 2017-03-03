@@ -1,3 +1,4 @@
+
 /*eslint-disable */
 
 angular.module('invertedIndex', [])
@@ -73,23 +74,6 @@ angular.module('invertedIndex', [])
           'danger ', true, 5000);
         return false;
       }
-      // displays serach result for all indexed files
-      if (selected === 'all') {
-        let count = 0;
-        for (const file in newIndex.indexedFiles) {
-          const searchData = newIndex.searchIndex(query, file);
-          fileCount = $scope.fileCount[file];
-          if ($scope.length(searchData) < 1) {
-            continue;
-          }
-          $scope.index[count] = $scope
-            .transformData(file, searchData, fileCount);
-          count += 1;
-        }
-        if ($scope.index.length < 1) {
-          $scope.alerts('word does not exist in any file', 'danger');
-        }
-      } else {
         fileCount = $scope.fileCount[selected];
         result = newIndex.searchIndex(query, selected);
         if ($scope.length(result) > 0) {
@@ -97,7 +81,6 @@ angular.module('invertedIndex', [])
         } else {
           $scope.alerts('no index found with that query', 'danger');
         }
-      }
     };
 
 
