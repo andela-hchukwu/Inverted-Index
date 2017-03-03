@@ -1,27 +1,27 @@
 const gulp = require('gulp');
 const browserSync = require('browser-sync');
-const connect = require('gulp-connect');
+const run = require('gulp-run');
 
-gulp.task('app', ['serve', 'test']);
+gulp.task('default', ['browser-sync', 'watch']);
 
-gulp.task('serve', () => {
-  const browser1 = browserSync.create();
-  browser1.init({
-    server: {
-      baseDir: './'
-    },
-    port: 5050,
-    ui: {
-      port: 9000
-    }
-  });
-  gulp.watch(['*src/html', 'src/js/**/*.js', 'src/css/*.css'])
-  .on('change', browser1.reload);
-});
-
-gulp.task('serveprod', () => {
-  connect.server({
-    root: './',
-    port: process.env.PORT || 5000 // localhost:5000
+gulp.task('browser-sync', () => {
+  browserSync.init({
+    server: './src',
+    port: process.env.PORT || 5000
   });
 });
+
+gulp.task('reload', () => {
+  browserSync.reload();
+});
+
+gulp.task('watch', () => {
+  gulp.watch('src/js/**/*.js', ['reload']);
+  gulp.watch('src/css/*.css', ['reload']);
+  gulp.watch('src/*.html', ['reload']);
+});
+
+gulp.task('test', () => {
+  run('jasmine spec/inverted-index-test.js').exec();
+});
+
