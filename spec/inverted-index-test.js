@@ -1,14 +1,5 @@
 const InvertedIndex = require('../src/inverted-index.js');
-
-
-const books = [
-  { title: 'Heroku',
-    text: 'You will be asked to enter your Heroku credentials the first time you run a command; after the first time, your email address and an API token will be saved'
-  },
-  { title: 'Coveralls',
-    text: 'See the latest code-coverage statistics on all of your repositories including the total percentages covered and the lines covered.'
-  }
-];
+const books = require('./books');
 
 describe('Inverted index Suite', () => {
    // Create an instance of the Index class
@@ -62,15 +53,14 @@ describe('Inverted index Suite', () => {
     });
   });
 
-  describe('Read Book Data', () => {
-    it('should have createIndex available in class InvertedIndex', () => {
-      expect(newIndex.createIndex).toBeDefined();
+  describe('Read book data', () => {
+    it('should read content of json and return false if file is empty', () => {
+      const isValid = InvertedIndex.readFileData(emptyBook);
+      expect(isValid).toBe(false);
     });
-    it('should ensure the JSON file is not empty', () => {
-      expect(newIndex.createIndex('emptyBook', emptyBook))
-        .toBe('JSON file is Empty');
-      expect(newIndex.createIndex('books', books))
-        .not.toBe('JSON file is Empty');
+    it('should read content of json and return true if file matches', () => {
+      const isValid = InvertedIndex.readFileData(books);
+      expect(isValid).toBe(true);
     });
   });
 
@@ -79,17 +69,19 @@ describe('Inverted index Suite', () => {
       expect(newIndex.index.books).toBeDefined();
     });
     it('should accurately map words to their document location', () => {
-      expect(Object.keys(newIndex.index).length).toBe(1);
-      expect(Object.keys(newIndex.index.books).length).toBe(38);
       expect(newIndex.index.books.heroku).toEqual([0]);
       expect(newIndex.index.books.your).toEqual([0, 1]);
+    });
+    it('should check for the length', () => {
+      expect(Object.keys(newIndex.index).length).toBe(1);
+      expect(Object.keys(newIndex.index.books).length).toBe(37);
     });
   });
 
   describe('Get Index', () => {
     it('should return an accurate index Object of the indexed file', () => {
       expect(newIndex.getIndex('books')).toBeDefined();
-      expect(Object.keys(newIndex.getIndex('books')).length).toBe(38);
+      expect(Object.keys(newIndex.getIndex('books')).length).toBe(37);
     });
     it('should return undefined if no index has been created', () => {
       const getIndex = newIndex.getIndex('book3');
