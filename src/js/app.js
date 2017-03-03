@@ -1,3 +1,5 @@
+/*eslint-disable */
+
 angular.module('invertedIndex', [])
   .controller('mainController', ['$scope', '$timeout', ($scope, $timeout) => {
     /**

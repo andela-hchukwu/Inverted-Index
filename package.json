@@ -4,8 +4,8 @@
   "description": "A simple inverted index application",
   "main": "app.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "jasmine spec/inverted-index-test.js"
+    "start": "gulp",
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
     "angular": "^1.6.2",
     "animate.css": "^3.5.2",
     "bower": "^1.8.0",
+    "browser-sync": "^2.18.8",
     "eslint": "^3.15.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
@@ -32,6 +33,7 @@
     "express": "^4.14.1",
     "gulp": "^3.9.1",
     "gulp-connect": "^5.0.0",
+    "gulp-run": "^1.7.1",
     "jasmine": "^2.5.3"
   },
   "devDependencies": {

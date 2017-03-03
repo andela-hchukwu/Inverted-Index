@@ -1,3 +1,5 @@
+/*eslint-disable */
+
 const InvertedIndex = require('../src/inverted-index.js');
 const books = require('./books');
 
