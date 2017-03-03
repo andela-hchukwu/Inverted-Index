@@ -47,5 +47,5 @@ footer {
   background: saddlebrown;
   padding: 10px;
   color: #fff;
- display: none !important;
+ display: block !important;
 }

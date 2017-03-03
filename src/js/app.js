@@ -3,7 +3,7 @@ angular.module('invertedIndex', [])
     /**
      *  {Object} instanciates the invertedIndex class
      */
-    const indexer = new InvertedIndex();
+    const newIndex = new InvertedIndex();
 
     $scope.uploadedFiles = {};
 
@@ -37,8 +37,8 @@ angular.module('invertedIndex', [])
       const uploadedFiles = $scope.uploadedFiles;
       if ($scope.isValidFile(selected) &&
         Array.isArray(uploadedFiles[selected])) {
-        indexer.createIndex(selected, uploadedFiles[selected]);
-        $scope.data = indexer.getIndex(selected);
+        newIndex.createIndex(selected, uploadedFiles[selected]);
+        $scope.data = newIndex.getIndex(selected);
         if (Array.isArray($scope.data.error)
         || $scope.length($scope.data) < 1) {
           $scope.alerts('invalid json file or format', 'danger');
@@ -64,7 +64,7 @@ angular.module('invertedIndex', [])
       let result;
       const selected = document.getElementById('indexed-files').value;
       let fileCount = null;
-      $scope.indexs = [];
+      $scope.index = [];
       // checks if a query was passed in
       if (!query || selected === '--select a file--') {
         $scope.alerts('please enter a query and select file  to search',
@@ -74,8 +74,8 @@ angular.module('invertedIndex', [])
       // displays serach result for all indexed files
       if (selected === 'all') {
         let count = 0;
-        for (const file in indexer.indexedFiles) {
-          const searchData = indexer.searchIndex(query, file);
+        for (const file in newIndex.indexedFiles) {
+          const searchData = newIndex.searchIndex(query, file);
           fileCount = $scope.fileCount[file];
           if ($scope.length(searchData) < 1) {
             continue;
@@ -89,7 +89,7 @@ angular.module('invertedIndex', [])
         }
       } else {
         fileCount = $scope.fileCount[selected];
-        result = indexer.searchIndex(query, selected);
+        result = newIndex.searchIndex(query, selected);
         if ($scope.length(result) > 0) {
           $scope.index[0] = $scope.transformData(selected, result, fileCount);
         } else {
