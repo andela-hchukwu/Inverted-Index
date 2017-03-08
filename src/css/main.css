@@ -11,8 +11,56 @@ body {
   border-color: saddlebrown;
 }
 
+.main-alert {
+  text-align: center;
+  background: red;
+  color: black
+}
+
+.alert-hidden {
+  visibility: hidden;
+}
+
+tbody {
+  background: #fff;
+}
+
+#file {
+  opacity: 0;
+}
+
+#file+label {
+  width: 200px;
+  height: 60px;
+  font-size: 20px;
+  padding: 15px;
+  background: saddlebrown;
+  text-align: center;
+  color: #ffc5c5;
+  box-shadow: 0px 4px 4px saddlebrown;
+  cursor: pointer;
+}
+
 h1 {
   color: white;
+}
+
+.indexed-table h1 {
+  color: black;
+}
+
+.upload {
+  padding: 40px 50px;
+  text-align: center;
+}
+
+.upload>p {
+  font-size: 25px;
+}
+
+.index-table {
+  margin-top: 40px;
+  margin-bottom: 20px;
 }
 
 .search {
@@ -43,10 +91,32 @@ h1 {
   border-bottom-right-radius: 10px;
 }
 
+table thead {
+  background: saddlebrown;
+  color: #fff;
+}
+
+table>thead>tr>th {
+  font-size: 20px;
+  padding: 15px;
+}
+
 footer {
   background: saddlebrown;
   padding: 10px;
   color: #fff;
+<<<<<<< HEAD
   display: block !important;
   
+=======
+}
+
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important;
+>>>>>>> a95b423b74514d6bd7ba3f029a0db985f8def43f
 }

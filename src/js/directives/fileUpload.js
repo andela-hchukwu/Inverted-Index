@@ -1,3 +1,4 @@
+/*eslint-disable */
 angular.module('invertedIndex')
   .directive('fileUpload', () => {
     /*

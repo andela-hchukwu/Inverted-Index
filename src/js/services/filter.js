@@ -4,7 +4,7 @@ angular.module('invertedIndex')
   */
   .filter('range', () => {
     return (input, number) => {
-      for (let i = 1; parseInt(number) >= i; i++) {
+      for (let i = 0; parseInt(number) > i; i++) {
         input.push(i);
       }
       return input;

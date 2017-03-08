@@ -3,7 +3,7 @@ angular.module('invertedIndex', [])
     /**
      *  {Object} instanciates the invertedIndex class
      */
-    const indexer = new InvertedIndex();
+    const newIndex = new InvertedIndex();
 
     $scope.uploadedFiles = {};
 
@@ -19,7 +19,7 @@ angular.module('invertedIndex', [])
      *
      * @param  {String} fileName - file name
      * @param  {Object} data  - data to transform
-     * @param  {count} count - count of object in the file
+     * @param  {Number} count - count of object in the file
      * @return {Object} return fileName, data and count
      */
     $scope.transformData = (fileName, data, count) => ({
@@ -36,14 +36,17 @@ angular.module('invertedIndex', [])
       const selected = document.getElementById('uploaded-files').value;
       const uploadedFiles = $scope.uploadedFiles;
       if ($scope.isValidFile(selected) &&
-        uploadedFiles.hasOwnProperty(selected)) {
-        const data = indexer.createIndex(selected, uploadedFiles[selected]);
-        if (data.hasOwnProperty('error') || $scope.length(data) < 1) {
+        Array.isArray(uploadedFiles[selected])) {
+        newIndex.createIndex(selected, uploadedFiles[selected]);
+        $scope.data = newIndex.getIndex(selected);
+        if (Array.isArray($scope.data.error)
+        || $scope.length($scope.data) < 1) {
           $scope.alerts('invalid json file or format', 'danger');
           return false;
         }
         const fileCount = uploadedFiles[selected].length;
-        $scope.index[0] = $scope.transformData(selected, data, fileCount);
+        $scope.index[0] = $scope
+        .transformData(selected, $scope.data, fileCount);
         $scope.fileCount[selected] = fileCount;
         if ($scope.allIndexedFiles.indexOf(selected) === -1) {
           $scope.allIndexedFiles.push(selected);
@@ -52,7 +55,8 @@ angular.module('invertedIndex', [])
       }
     };
 
-    /** searches  indexed files for
+
+     /** searches  indexed files for
      *
      * @param {String} query alue to be searched
      * @return {void}  set the index value
@@ -71,22 +75,22 @@ angular.module('invertedIndex', [])
       // displays serach result for all indexed files
       if (selected === 'all') {
         let count = 0;
-        for (const file in indexer.indexedFiles) {
-          const searchData = indexer.searchIndex(query, file);
+        Object.keys(newIndex.index).forEach((file) => {
+          const searchData = newIndex.searchIndex(query, file);
           fileCount = $scope.fileCount[file];
           if ($scope.length(searchData) < 1) {
-            continue;
+            return;
           }
           $scope.index[count] = $scope
-            .transformData(file, searchData, fileCount);
-          count++;
-        }
+          .transformData(file, searchData, fileCount);
+          count += 1;
+        });
         if ($scope.index.length < 1) {
           $scope.alerts('word does not exist in any file', 'danger');
         }
       } else {
         fileCount = $scope.fileCount[selected];
-        result = indexer.searchIndex(query, selected);
+        result = newIndex.searchIndex(query, selected);
         if ($scope.length(result) > 0) {
           $scope.index[0] = $scope.transformData(selected, result, fileCount);
         } else {
@@ -115,9 +119,9 @@ angular.module('invertedIndex', [])
      *
      * @param {Strimg} message to alert
      * @param {tye} type of message
-     * @param {Boolean} show message
+     * @param {Boolean} show for falsy
      * @param {Integer} timeout of display
-     * @return {null} no return statement
+     * @return {object} return
      */
     $scope.alerts = (message, type, show, timeout) => {
       $scope.alert = {
