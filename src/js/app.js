@@ -1,6 +1,3 @@
-
-/*eslint-disable */
-
 angular.module('invertedIndex', [])
   .controller('mainController', ['$scope', '$timeout', ($scope, $timeout) => {
     /**
@@ -22,7 +19,7 @@ angular.module('invertedIndex', [])
      *
      * @param  {String} fileName - file name
      * @param  {Object} data  - data to transform
-     * @param  {count} count - count of object in the file
+     * @param  {Number} count - count of object in the file
      * @return {Object} return fileName, data and count
      */
     $scope.transformData = (fileName, data, count) => ({
@@ -58,7 +55,8 @@ angular.module('invertedIndex', [])
       }
     };
 
-    /** searches  indexed files for
+
+     /** searches  indexed files for
      *
      * @param {String} query alue to be searched
      * @return {void}  set the index value
@@ -74,6 +72,23 @@ angular.module('invertedIndex', [])
           'danger ', true, 5000);
         return false;
       }
+      // displays serach result for all indexed files
+      if (selected === 'all') {
+        let count = 0;
+        Object.keys(newIndex.index).forEach((file) => {
+          const searchData = newIndex.searchIndex(query, file);
+          fileCount = $scope.fileCount[file];
+          if ($scope.length(searchData) < 1) {
+            return;
+          }
+          $scope.index[count] = $scope
+          .transformData(file, searchData, fileCount);
+          count += 1;
+        });
+        if ($scope.index.length < 1) {
+          $scope.alerts('word does not exist in any file', 'danger');
+        }
+      } else {
         fileCount = $scope.fileCount[selected];
         result = newIndex.searchIndex(query, selected);
         if ($scope.length(result) > 0) {
@@ -81,6 +96,7 @@ angular.module('invertedIndex', [])
         } else {
           $scope.alerts('no index found with that query', 'danger');
         }
+      }
     };
 
 
@@ -103,9 +119,9 @@ angular.module('invertedIndex', [])
      *
      * @param {Strimg} message to alert
      * @param {tye} type of message
-     * @param {Boolean} show message
+     * @param {Boolean} show for falsy
      * @param {Integer} timeout of display
-     * @return {null} no return statement
+     * @return {object} return
      */
     $scope.alerts = (message, type, show, timeout) => {
       $scope.alert = {

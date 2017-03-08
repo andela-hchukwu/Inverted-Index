@@ -16,7 +16,7 @@ class InvertedIndex {
    */
   static tokenize(words) {
     return words.trim().replace(/-/g, ' ')
-      .replace(/[.,/#!$%^&@*;:'{}=_`~()]/g, '')
+      .replace(/[^a-z\s]/g, '')
       .toLowerCase()
       .split(' ')
       .sort();
@@ -31,24 +31,6 @@ class InvertedIndex {
     return tokens.filter((item, index) => tokens.indexOf(item) === index);
   }
 
-   /**
-   * checks the content of the uploaded json file and returns
-   * true if the file follows the allowed format
-   * @param {Array} file the content of the file
-   * @returns {boolean} returns a boolean
-   */
-  static readFileData(file) {
-    if (!Array.isArray(file) || file.length < 1) {
-      return false;
-    }
-    for (let i = 0; i < file.length; i += 1) {
-      if (!file[i].title || !file[i].text) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   /**
    * @param{String} fileName - The name of the file to be indexed
    * @param{Array} fileToIndex - Array of contents of the JSON file to index
@@ -57,9 +39,9 @@ class InvertedIndex {
   createIndex(fileName, fileToIndex) {
     const wordsToIndex = [];
     const fileIndex = {};
-    const readFile = InvertedIndex.readFileData(fileToIndex);
-    if (!readFile) {
-      return false;
+    const fileLength = fileToIndex.length;
+    if (fileLength === 0) {
+      return 'JSON file is Empty';
     }
     fileToIndex.forEach((document) => {
       if (document.text && document.title) {
@@ -92,29 +74,18 @@ class InvertedIndex {
 
   /**
    * @param{String} searchQuery - Words to search for
-   * @param{String} indexToSearch - Index to query
+   * @param{String} fileName - file to query
    * @return{Object} searchResults - Maps searched words to document locations
    */
-  searchIndex(searchQuery, indexToSearch) {
+  searchIndex(searchQuery, fileName) {
+    const fileToSearch = this.getIndex(fileName);
     const searchResult = {};
-    const searchTerms = InvertedIndex.uniqueWords(searchQuery);
-    searchTerms.forEach((word) => {
-      if (indexToSearch) {
-        if (this.index[indexToSearch][word]) {
-          searchResult[word] = this.index[indexToSearch][word];
-        } else {
-          searchResult[word] =
-            `We are Sorry but ${word} is not found in our database`;
-        }
-      } else {
-        Object.keys(this.index).forEach((key) => {
-          if (this.index[key][word]) {
-            searchResult[word] = this.index[key][word];
-          } else {
-            searchResult[word] =
-              `We are Sorry but ${word} is not found in our database`;
-          }
-        });
+    if (!searchQuery || typeof (fileToSearch) === 'string') {
+      return 'no query to search';
+    }
+    InvertedIndex.uniqueWords(searchQuery).forEach((word) => {
+      if (Array.isArray(fileToSearch[word])) {
+        searchResult[word] = fileToSearch[word];
       }
     });
     return searchResult;

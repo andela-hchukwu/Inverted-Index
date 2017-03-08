@@ -1,6 +1,17 @@
 {
-    "name": "inverted-index",
-    "description": "A simple inverted index application",
-    "repository": "https://github.com/andela-hchukwu/Inverted-Index.git",
-    "keywords": ["node", "express", "inverted-index"]
+  "name": "Inverted-Index",
+  "scripts": {
+  },
+  "env": {
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
 }
