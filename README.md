@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/andela-hchukwu/Inverted-Index.svg?branch=Fix%2F13965538%2Frefactor-code)](https://travis-ci.org/andela-hchukwu/Inverted-Index)
 [![Coverage Status](https://coveralls.io/repos/github/andela-hchukwu/Inverted-Index/badge.svg?branch=Fix%2F13965538%2Frefactor-code)](https://coveralls.io/github/andela-hchukwu/Inverted-Index?branch=Fix%2F13965538%2Frefactor-code)
+[![Code Climate](https://codeclimate.com/github/andela-hchukwu/Inverted-Index/badges/gpa.svg)](https://codeclimate.com/github/andela-hchukwu/Inverted-Index)
 
 # **INVERTED-INDEX**
 *Inverted index takes a JSON array of text objects and creates an index from the array. The index allows a user to search for text blocks in the array that contain a specified collection of words..*
