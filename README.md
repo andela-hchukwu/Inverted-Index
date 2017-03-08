@@ -14,7 +14,7 @@
 The purpose of an inverted index is to allow user perform fast and full text search
 
 # **How can I get started with the project**
-* NA
+* You can view the application [here](https://indexinverted.herokuapp.com/)
 
 # **Technologies for the app**
 * Node.js
