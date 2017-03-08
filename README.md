@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/andela-hchukwu/Inverted-Index.svg?branch=Fix%2F13965538%2Frefactor-code)](https://travis-ci.org/andela-hchukwu/Inverted-Index)
+[![Build Status](https://travis-ci.org/andela-hchukw[![Build Status](https://travis-ci.org/andela-hchukwu/Inverted-Index.svg?branch=Fix%2F13965538%2Frefactor-code)](https://travis-ci.org/andela-hchukwu/Inverted-Index)
 [![Coverage Status](https://coveralls.io/repos/github/andela-hchukwu/Inverted-Index/badge.svg?branch=master)](https://coveralls.io/github/andela-hchukwu/Inverted-Index?branch=master)
 
 # **INVERTED-INDEX**
