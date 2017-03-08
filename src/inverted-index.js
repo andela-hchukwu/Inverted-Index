@@ -16,7 +16,7 @@ class InvertedIndex {
    */
   static tokenize(words) {
     return words.trim().replace(/-/g, ' ')
-      .replace(/[^a-z\s]/g, '')
+      .replace(/[^A-z\s]/g, '')
       .toLowerCase()
       .split(' ')
       .sort();
