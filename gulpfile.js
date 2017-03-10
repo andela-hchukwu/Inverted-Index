@@ -1,4 +1,4 @@
-/*eslint-disable */
+/* eslint-disable */
 const gulp = require('gulp');
 const browserSync = require('browser-sync');
 const run = require('gulp-run');
@@ -24,6 +24,6 @@ gulp.task('watch', () => {
 });
 
 gulp.task('test', () => {
-  run('istanbul cover jasmine spec/inverted-index-test.js').exec();
+  run('istanbul cover jasmine').exec();
 });
 
