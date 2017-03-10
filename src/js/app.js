@@ -117,8 +117,8 @@ angular.module('invertedIndex', [])
 
     /**  configures the alert property
      *
-     * @param {Strimg} message to alert
-     * @param {tye} type of message
+     * @param {String} message to alert
+     * @param {type} type of message
      * @param {Boolean} show for falsy
      * @param {Integer} timeout of display
      * @return {object} return

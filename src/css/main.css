@@ -105,10 +105,7 @@ footer {
   background: saddlebrown;
   padding: 10px;
   color: #fff;
-<<<<<<< HEAD
   display: block !important;
-  
-=======
 }
 
 [ng\:cloak],
@@ -118,5 +115,4 @@ footer {
 .ng-cloak,
 .x-ng-cloak {
   display: none !important;
->>>>>>> a95b423b74514d6bd7ba3f029a0db985f8def43f
 }
