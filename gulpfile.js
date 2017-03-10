@@ -24,6 +24,6 @@ gulp.task('watch', () => {
 });
 
 gulp.task('test', () => {
-  run('istanbul cover jasmine spec/inverted-index-test.js').exec();
+  run('istanbul cover jasmine').exec();
 });
 

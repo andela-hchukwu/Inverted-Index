@@ -16,7 +16,7 @@ angular.module('invertedIndex')
             return;
           }
           const reader = new FileReader();
-          // event fired when reader.readAsTex is called
+          // event fired when reader.readAsText is called
           reader.onload = (event) => {
             try {
               const result = JSON.parse(event.target.result);
