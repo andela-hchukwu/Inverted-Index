@@ -24,6 +24,6 @@ gulp.task('watch', () => {
 });
 
 gulp.task('test', () => {
-  run('jasmine').exec();
+  run('istanbul cover jasmine').exec();
 });
 

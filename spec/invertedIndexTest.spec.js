@@ -1,4 +1,4 @@
-const invertedIndex = require('../src/Invertedindex.js');
+const invertedIndex = require('../src/InvertedIndex.js');
 const books = require('./books');
 
 describe('Inverted index Suite', () => {
