@@ -1,9 +1,11 @@
+/* global angular */
 angular.module('invertedIndex', [])
   .controller('mainController', ['$scope', '$timeout', ($scope, $timeout) => {
     /**
      *  {Object} instanciates the invertedIndex class
      */
-    const newIndex = new InvertedIndex();
+
+    const newIndex = new InvertedIndex(); // eslint-disable-line no-undef
 
     $scope.uploadedFiles = {};
 
@@ -103,16 +105,16 @@ angular.module('invertedIndex', [])
     /** checks for a valid json file
      *
      * @param {String}  file to check
-     * @return {Boolen}  true or flase
+     * @return {Boolean}  true or flase
      */
     $scope.isValidFile = file => file.match(/\.json$/);
 
     /** gets the length an object
      *
-     * @param {Object}  object to check
-     * @return {Int}  true or flase
+     * @param {Object}  document to check
+     * @return {Boolean}  true or flase
      */
-    $scope.length = object => Object.keys(object).length;
+    $scope.length = document => Object.keys(document).length;
 
 
     /**  configures the alert property
