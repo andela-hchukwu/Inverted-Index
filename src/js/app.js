@@ -6,15 +6,10 @@ angular.module('invertedIndex', [])
      */
 
     const newIndex = new InvertedIndex(); // eslint-disable-line no-undef
-
     $scope.uploadedFiles = {};
-
     $scope.index = [];
-
     $scope.showTable = false;
-
     $scope.fileCount = [];
-
     $scope.allIndexedFiles = [];
 
     /** converts data to be feed to the view
