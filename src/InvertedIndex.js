@@ -90,7 +90,7 @@ class InvertedIndex {
    * @return{Object} searchResults - Maps searched words to document locations
    */
   searchIndex(searchQuery, fileName) {
-    const fileToSearch = this.getIndex(fileName);
+    const fileToSearch = this.getIndex(fileName) || Object.keys(this.index);
     const searchResult = {};
     if (!searchQuery || typeof fileToSearch === 'string') {
       return 'no query to search';
@@ -105,6 +105,25 @@ class InvertedIndex {
     return searchResult;
   }
 
+  /** search inverted index
+   * takes a string of words to search
+   * and returns an object with words mapped
+   * to document locations
+   * @param{String} searchQuery - Words to search for
+   * @return{Object} searchResults - Maps searched words to document locations
+   */
+  searchAllIndex(searchQuery) {
+    const searchResult = {};
+    if (!searchQuery) {
+      return 'no query to search';
+    }
+    const indexedWords = Object.keys(this.index);
+    indexedWords.forEach((fileName) => {
+      searchResult[fileName] = this.searchIndex(searchQuery, fileName);
+    });
+    return searchResult;
+  }
 }
+
 
 module.exports = InvertedIndex;
