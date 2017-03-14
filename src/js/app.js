@@ -30,6 +30,7 @@ angular.module('invertedIndex', [])
      * @return {Boolean} return false for invalid file
      */
     $scope.createIndex = () => {
+      $scope.index = [];
       const selected = document.getElementById('uploaded-files').value;
       const uploadedFiles = $scope.uploadedFiles;
       if ($scope.isValidFile(selected) &&
@@ -37,21 +38,21 @@ angular.module('invertedIndex', [])
         newIndex.createIndex(selected, uploadedFiles[selected]);
         $scope.data = newIndex.getIndex(selected);
         if (Array.isArray($scope.data.error)
-        || $scope.length($scope.data) < 1) {
+          || $scope.length($scope.data) < 1) {
           $scope.alerts('invalid json file or format', 'danger');
           return false;
         }
         const fileCount = uploadedFiles[selected].length;
         $scope.index[0] = $scope
-        .transformData(selected, $scope.data, fileCount);
+          .transformData(selected, $scope.data, fileCount);
         $scope.fileCount[selected] = fileCount;
         if ($scope.allIndexedFiles.indexOf(selected) === -1) {
           $scope.allIndexedFiles.push(selected);
         }
+        $scope.all = false;
         $scope.showTable = true;
       }
     };
-
 
      /** searches  indexed files for
      *
@@ -59,6 +60,7 @@ angular.module('invertedIndex', [])
      * @return {void}  set the index value
      */
     $scope.searchIndex = (query) => {
+      $scope.index = [];
       let result;
       const selected = document.getElementById('indexed-files').value;
       let fileCount = null;
@@ -71,9 +73,10 @@ angular.module('invertedIndex', [])
       }
       // displays serach result for all indexed files
       if (selected === 'all') {
+        $scope.all = true;
         let count = 0;
         Object.keys(newIndex.index).forEach((file) => {
-          const searchData = newIndex.searchIndex(query, file);
+          const searchData = newIndex.searchAllIndex(query);
           fileCount = $scope.fileCount[file];
           if ($scope.length(searchData) < 1) {
             return;
@@ -86,6 +89,7 @@ angular.module('invertedIndex', [])
           $scope.alerts('word does not exist in any file', 'danger');
         }
       } else {
+        $scope.all = false;
         fileCount = $scope.fileCount[selected];
         result = newIndex.searchIndex(query, selected);
         if ($scope.length(result) > 0) {
