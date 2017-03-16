@@ -78,7 +78,7 @@ class InvertedIndex {
    */
   getIndex(fileName) {
     const file = this.index[fileName];
-    return file || undefined;
+    return file || 'index does not exist';
   }
 
   /** search inverted index
