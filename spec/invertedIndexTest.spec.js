@@ -94,7 +94,7 @@ describe('Inverted index Suite', () => {
   describe('Get Index',
   () => it('should return undefined if no index has been created', () => {
     const getIndex = newIndex.getIndex('book3');
-    expect(getIndex).toBeUndefined();
+    expect(getIndex).toEqual('index does not exist');
   }));
 
   describe('Search index',
@@ -129,13 +129,11 @@ describe('Inverted index Suite', () => {
     it(`should take in a word and return all
     books the words can be found in`, () => {
       expect(newIndex.searchAllIndex('to'))
-     // .toEqual(jasmine.arrayContaining([0, 1]));
       .toEqual({ books: { to: [0, 1] } });
     });
     it(`should take in a word that is not indexed 
     and return an empty array indicating not found`, () => {
       expect(newIndex.searchAllIndex('get'))
-     // .toEqual(jasmine.arrayContaining([]));
       .toEqual({ books: { get: [] } });
     });
   });
